@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/tmdb/:path*",
+      "destination": "https://api.themoviedb.org/3/:path*"
+    },
+    {
+      "source": "/api/images/:path*",
+      "destination": "https://image.tmdb.org/t/p/:path*"
+    }
+  ]
+}
