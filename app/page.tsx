@@ -77,7 +77,7 @@ export default function CinemaScope() {
         params.set("year", year);
       }
 
-      const response = await fetch(/api/tmdb/search?${params.toString()});
+      const response = await fetch(`/api/tmdb/search?${params.toString()}`);
       const data: TMDBSearchResponse = await response.json();
 
       if (!response.ok) {
