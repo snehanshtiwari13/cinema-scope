@@ -52,7 +52,7 @@ export async function GET(
       ? TMDB_UPSTREAM_API_BASE.slice(0, -1) 
       : TMDB_UPSTREAM_API_BASE;
 
-    const url = new URL(`${baseUrl}/person/${id}/combined_credits`);
+      const url = new URL(`/api/person/${id}`, window.location.origin);
     url.searchParams.set("language", "en-US");
 
     const response = await fetch(url.toString(), {
