@@ -52,10 +52,10 @@ export async function GET(
       ? TMDB_UPSTREAM_API_BASE.slice(0, -1) 
       : TMDB_UPSTREAM_API_BASE;
 
-      const url = new URL(`/api/person/${id}`, window.location.origin);
+      const url = new URL(`${baseUrl}/3/person/${id}/combined_credits`);
     url.searchParams.set("language", "en-US");
 
-    const response = await fetch(url.toString(), {
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${TMDB_API_TOKEN}`,
         "Content-Type": "application/json",
