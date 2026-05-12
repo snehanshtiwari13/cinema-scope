@@ -140,7 +140,7 @@ export function DetailModal({ id, mediaType, isOpen, onClose }: DetailModalProps
       setError(null);
 
       try {
-        const response = await fetch(`${TMDB_API_BASE}/${mediaType}/${id}`);
+        const response = await fetch(`/api/person/${id}?t=${Date.now()}`);
         const data = await response.json();
 
         if (!response.ok) {
