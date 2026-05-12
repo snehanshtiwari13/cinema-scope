@@ -26,15 +26,15 @@ export async function GET(request: NextRequest) {
       params.set("with_genres", genreId);
     }
 
-    const response = await fetch(
-      `${TMDB_UPSTREAM_API_BASE}/discover/${type}?${params.toString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`/api/tmdb/person/${id}/credits`);
+const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.error || "Failed to fetch filmography");
+}
+
+// Use the data (usually data.credits based on the backend we wrote)
+setCredits(data.credits);
 
     if (!response.ok) {
       const errorData = await response.json();
