@@ -105,7 +105,7 @@ export default function CinemaScope() {
           // Fetch the person's combined credits
           const creditsResponse = await fetch(
             `/api/tmdb/person/${topResult.id}/credits?t=${Date.now()}`
-          );
+          );s
           const creditsData: PersonCreditsResponse = await creditsResponse.json();
 
           if (creditsResponse.ok && creditsData.credits) {
