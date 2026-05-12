@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { TMDB_UPSTREAM_API_BASE } from "@/lib/tmdb";
 
-const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
+// Using the same proxy variable used in other parts of your app
+const TMDB_UPSTREAM_API_BASE = process.env.NEXT_PUBLIC_TMDB_PROXY_URL || 'https://api.themoviedb.org/3';
+const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 export interface CreditItem {
   id: number;
@@ -46,8 +47,12 @@ export async function GET(
   }
 
   try {
-    // Fetch combined credits (both movie and TV)
-    const url = new URL(`${TMDB_UPSTREAM_API_BASE}/person/${id}/combined_credits`);
+    // Ensure no double slashes by cleaning the base URL
+    const baseUrl = TMDB_UPSTREAM_API_BASE.endsWith('/') 
+      ? TMDB_UPSTREAM_API_BASE.slice(0, -1) 
+      : TMDB_UPSTREAM_API_BASE;
+
+    const url = new URL(`${baseUrl}/person/${id}/combined_credits`);
     url.searchParams.set("language", "en-US");
 
     const response = await fetch(url.toString(), {
@@ -63,10 +68,8 @@ export async function GET(
 
     const data: CombinedCreditsResponse = await response.json();
 
-    // Combine cast and crew, removing duplicates
-    const allCredits = [...data.cast, ...data.crew];
+    const allCredits = [...(data.cast || []), ...(data.crew || [])];
     
-    // Remove duplicates by id and media_type
     const seen = new Set<string>();
     const uniqueCredits = allCredits.filter((item) => {
       const key = `${item.media_type}-${item.id}`;
@@ -75,12 +78,10 @@ export async function GET(
       return true;
     });
 
-    // Sort by popularity (highest first)
     const sortedCredits = uniqueCredits.sort(
       (a, b) => (b.popularity || 0) - (a.popularity || 0)
     );
 
-    // Add media_type to each item (cast items might not have it)
     const creditsWithType = sortedCredits.map((item) => ({
       ...item,
       media_type: item.media_type || (item.title ? "movie" : "tv"),
